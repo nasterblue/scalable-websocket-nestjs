@@ -3,6 +3,10 @@
 [Nest](https://nestjs.com/)
 [Socket.io](https://socket.io/)
 
+
+# Architecture
+![Architecture](./architecture.png)
+
 ## Installation
 
 ```bash
