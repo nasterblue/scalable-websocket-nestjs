@@ -1,7 +1,7 @@
 # System requirement
-[Redis](https://redis.io/)
-[Nest](https://nestjs.com/)
-[Socket.io](https://socket.io/)
+* [Redis](https://redis.io/)
+* [Nest](https://nestjs.com/)
+* [Socket.io](https://socket.io/)
 
 
 # Architecture
