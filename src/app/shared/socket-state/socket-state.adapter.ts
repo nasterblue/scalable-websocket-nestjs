@@ -1,4 +1,4 @@
-import {INestApplicationContext, WebSocketAdapter} from '@nestjs/common';
+import {INestApplicationContext, WebSocketAdapter, Logger} from '@nestjs/common';
 import {IoAdapter} from '@nestjs/platform-socket.io';
 import socketio from 'socket.io';
 
@@ -15,6 +15,8 @@ export interface AuthenticatedSocket extends socketio.Socket {
 }
 
 export class SocketStateAdapter extends IoAdapter implements WebSocketAdapter {
+  logger = new Logger(SocketStateAdapter.name);
+
   public constructor(
     private readonly app: INestApplicationContext,
     private readonly socketStateService: SocketStateService,
@@ -24,6 +26,7 @@ export class SocketStateAdapter extends IoAdapter implements WebSocketAdapter {
   }
 
   public create(port: number, options: socketio.ServerOptions = {}): socketio.Server {
+    this.logger.log(['create',port,options]);
     const server = super.createIOServer(port, options);
     this.redisPropagatorService.injectSocketServer(server);
 

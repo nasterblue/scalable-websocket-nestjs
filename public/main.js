@@ -22,7 +22,7 @@ $(function() {
   var typing = false;
   var lastTypingTime;
   var $currentInput = $usernameInput.focus();
-  var socket = io('http://localhost:3000', {
+   window.socket = io('http://localhost:3000', {
     query: {
       token: '123',
     },
@@ -80,7 +80,6 @@ $(function() {
 
   // Adds the visual chat message to the message list
   const addChatMessage = (data, options) => {
-
     console.log(['addChatMessage',data, options]);
     // Don't fade the message in if there is an 'X was typing'
     var $typingMessages = getTypingMessages(data);
@@ -233,6 +232,7 @@ $(function() {
 
   // Whenever the server emits 'login', log the login message
   socket.on('login', (data) => {
+    console.log(['login', data]);
     connected = true;
   // Display the welcome message
     var message = "Welcome to Socket.IO Chat – ";

@@ -3,6 +3,9 @@
 * [Nest](https://nestjs.com/)
 * [Socket.io](https://socket.io/)
 
+# Prerequisites
+* [Redis](https://redis.io/)
+
 
 # Architecture
 ![Architecture](./architecture.png)

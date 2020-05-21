@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import {tap} from 'rxjs/operators';
 import {Server} from 'socket.io';
 
@@ -15,6 +15,8 @@ import {
 
 @Injectable()
 export class RedisPropagatorService {
+  logger = new Logger(RedisPropagatorService.name);
+
   private socketServer: Server;
 
   public constructor(
@@ -39,13 +41,12 @@ export class RedisPropagatorService {
 
   public injectSocketServer(server: Server): RedisPropagatorService {
     this.socketServer = server;
-
     return this;
   }
 
   private consumeSendEvent = (eventInfo: RedisSocketEventSendDTO): void => {
     const { userId, event, data, socketId } = eventInfo;
-
+    this.logger.log(['consumeSendEvent',eventInfo]);
     return this.socketStateService
       .get(userId)
       .filter((socket) => socket.id !== socketId)
@@ -55,6 +56,7 @@ export class RedisPropagatorService {
   private consumeEmitToAllEvent = (
     eventInfo: RedisSocketEventEmitDTO,
   ): void => {
+    this.logger.log(['consumeEmitToAllEvent',eventInfo]);
     this.socketServer.emit(eventInfo.event, eventInfo.data);
   };
 
@@ -62,7 +64,7 @@ export class RedisPropagatorService {
     eventInfo: RedisSocketEventEmitDTO,
   ): void => {
     const { event, data } = eventInfo;
-
+    this.logger.log(['consumeEmitToAuthenticatedEvent',eventInfo]);
     return this.socketStateService
       .getAll()
       .forEach((socket) => socket.emit(event, data));
@@ -74,7 +76,7 @@ export class RedisPropagatorService {
     }
 
     this.redisService.publish(REDIS_SOCKET_EVENT_SEND_NAME, eventInfo);
-
+    this.logger.log(['propagateEvent',eventInfo]);
     return true;
   }
 
@@ -83,13 +85,13 @@ export class RedisPropagatorService {
       REDIS_SOCKET_EVENT_EMIT_AUTHENTICATED_NAME,
       eventInfo,
     );
-
+    this.logger.log(['emitToAuthenticated',eventInfo]);
     return true;
   }
 
   public emitToAll(eventInfo: RedisSocketEventEmitDTO): boolean {
     this.redisService.publish(REDIS_SOCKET_EVENT_EMIT_ALL_NAME, eventInfo);
-
+    this.logger.log(['emitToAll',eventInfo]);
     return true;
   }
 }
